@@ -7,6 +7,7 @@ from incidentbot.api.routes import (
     pager,
     setting,
     users,
+    diagnose,
 )
 from incidentbot.configuration.settings import settings, __version__
 
@@ -62,6 +63,7 @@ Router
 
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["health"])
+api_router.include_router(diagnose.router, tags=["diagnose"])
 
 if settings.api.enabled:
     api_router.include_router(incident.router, tags=["incident"])
