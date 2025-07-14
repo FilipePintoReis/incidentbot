@@ -6,6 +6,8 @@ router = APIRouter()
 
 @router.get("/diagnose", status_code=status.HTTP_200_OK)
 async def get_diagnose():
+    print("get_diagnose is being called.")
+    
     agent_response: str = BedRockHandler.invoke_bedrock_agent(
         agent_id="MH00AZX5TB",
         agent_alias_id="GIITVBBSUU",
