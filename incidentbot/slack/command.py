@@ -25,6 +25,7 @@ from incidentbot.slack.handler import app
 from incidentbot.slack.messages import BlockBuilder
 from incidentbot.slack.util import parse_modal_values
 from slack_sdk.errors import SlackApiError
+from incidentbot.diagnostics.BedRockHandler import BedRockHandler
 from typing import Any
 
 
@@ -258,6 +259,16 @@ def command_blocks(
                         },
                         "action_id": "pager",
                     },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "deep_purple_hello",
+                            "text": "deep_purple_hello",
+                            "emoji": True,
+                        },
+                        "value": "deep_purple_hello",
+                        "action_id": "incident.deep_purple_hello",
+                    }
                 ]
                 + join_buttons,
             }
@@ -298,6 +309,33 @@ def show_responders(ack, body):
     except SlackApiError as error:
         logger.error(f"error sending describe message to slack: {error}")
 
+@app.action("deep_purple_hello")
+def say_hello_to_deep_purple(ack, body):
+    """
+    Say deep_purple_hello
+    """
+    ack()
+
+    channel_id = body.get("channel").get("id")
+    record = IncidentDatabaseInterface.get_one(channel_id=channel_id)
+
+    agent_response: str = BedRockHandler.invoke_bedrock_agent(
+        agent_id="MH00AZX5TB",
+        agent_alias_id="GIITVBBSUU",
+        input_text="Hello, I'm Deep Purple. How are you today?",
+        enable_trace=True, 
+        end_session=False
+    )
+
+    try:
+        slack_web_client.chat_postMessage(
+            channel=record.channel_id,
+            text=agent_response,
+        )
+
+        return
+    except SlackApiError as error:
+        logger.error(f"error sending describe message to slack: {error}")
 
 @app.action("maintenance_windows.list")
 def list_maintenance_windows(ack, body):
