@@ -273,6 +273,28 @@ def command_blocks(
                         "action_id": "active_alerts_prod",
                         "style": "primary",
                     },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Active Payment Alerts PROD",
+                            "emoji": True,
+                        },
+                        "value": "p1_alerts_prod",
+                        "action_id": "p1_alerts_prod",
+                        "style": "primary",
+                    },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Active High CPU Usage Alerts PROD",
+                            "emoji": True,
+                        },
+                        "value": "active_higher_cpu",
+                        "action_id": "active_higher_cpu",
+                        "style": "primary",
+                    },
                 ],
             }
         ]
@@ -354,6 +376,62 @@ def say_hello_to_deep_purple(ack, body):
         agent_id="X1XHBHFMGR",
         agent_alias_id="WREL4DGFI3",
         input_text="Show me all active alerts in production",
+        enable_trace=True, 
+        end_session=False
+    )
+
+    try:
+        slack_web_client.chat_postMessage(
+            channel=record.channel_id,
+            text=agent_response,
+        )
+
+        return
+    except SlackApiError as error:
+        logger.error(f"error sending describe message to slack: {error}")
+
+@app.action("p1_alerts_prod")
+def say_hello_to_deep_purple(ack, body):
+    """
+    Say active_payment_alerts_prod
+    """
+    ack()
+
+    channel_id = body.get("channel").get("id")
+    record = IncidentDatabaseInterface.get_one(channel_id=channel_id)
+
+    agent_response: str = BedRockHandler.invoke_bedrock_agent(
+        agent_id="X1XHBHFMGR",
+        agent_alias_id="WREL4DGFI3",
+        input_text="Show me all active P1 alerts in production",
+        enable_trace=True, 
+        end_session=False
+    )
+
+    try:
+        slack_web_client.chat_postMessage(
+            channel=record.channel_id,
+            text=agent_response,
+        )
+
+        return
+    except SlackApiError as error:
+        logger.error(f"error sending describe message to slack: {error}")
+
+@app.action("active_higher_cpu")
+def say_hello_to_deep_purple(ack, body):
+    """
+    Say active_higher_cpu
+    """
+    ack()
+
+    channel_id = body.get("channel").get("id")
+    record = IncidentDatabaseInterface.get_one(channel_id=channel_id)
+
+    agent_response: str = BedRockHandler.invoke_bedrock_agent(
+        agent_id="X1XHBHFMGR",
+        agent_alias_id="WREL4DGFI3",
+        input_text="Show me all alerts that are related to CPU Usage in Production",
         enable_trace=True, 
         end_session=False
     )
