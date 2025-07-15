@@ -62,13 +62,14 @@ class ConfluenceApi:
         )
 
     def test(self) -> bool:
-        try:
-            return self.confluence.page_exists(
-                settings.integrations.atlassian.confluence.space,
-                settings.integrations.atlassian.confluence.parent,
-            )
-        except Exception as error:
-            logger.error(f"Error authenticating to Confluence: {error}")
-            logger.error(
-                "Please check Confluence configuration and try again."
-            )
+        pass
+        # try:
+        #     return self.confluence.page_exists(
+        #         settings.integrations.atlassian.confluence.space,
+        #         settings.integrations.atlassian.confluence.parent,
+        #     )
+        # except Exception as error:
+        #     logger.error(f"Error authenticating to Confluence: {error}")
+        #     logger.error(
+        #         "Please check Confluence configuration and try again."
+        #     )
