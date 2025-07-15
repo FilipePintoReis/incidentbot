@@ -2460,6 +2460,21 @@ files = [
 slack_sdk = ">=3.35.0,<4"
 
 [[package]]
+name = "slack-client"
+version = "0.3.0"
+description = "An interface for the Slack web API"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "slack_client-0.3.0-py3-none-any.whl", hash = "sha256:444001d8b2c31acb72c229ddfa1a90f544e88ef64325fd10bf8eac2c2ec92a8e"},
+    {file = "slack_client-0.3.0.tar.gz", hash = "sha256:b379311f4881867b1ae1f44e1de2d29808755e72753aea6d843927a0ebffc4a3"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "slack-sdk"
 version = "3.35.0"
 description = "The Slack API Platform SDK for Python"
@@ -3011,4 +3026,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12.6"
-content-hash = "19805640ff98b464a76d35fe15e8397b339e19fbc8c44b68e414bf8fe3ee3da7"
+content-hash = "3696fd6bffb6ca94f5c8a7d5ace6ec88f017420b9ff82efadd84867b281f2246"

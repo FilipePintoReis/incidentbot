@@ -13,6 +13,9 @@ from incidentbot.logging import logger
 from requests.exceptions import HTTPError
 from slack.client import get_postmortem_channel_history
 
+from incidentbot.diagnostics.BedRockHandler import BedRockHandler
+import json
+
 
 class IncidentPostmortem:
     def __init__(
@@ -91,8 +94,6 @@ class IncidentPostmortem:
         agent_id = "XF3IEEO45Q"
         alias_id = "3LIJUD6ECM"
 
-        from incidentbot.diagnostics.BedRockHandler import BedRockHandler
-        import json
         agent_response: str = BedRockHandler.invoke_bedrock_agent(
             agent_id=agent_id,
             agent_alias_id=alias_id,
