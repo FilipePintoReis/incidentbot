@@ -137,7 +137,7 @@ class IncidentPostmortem:
 
             # Get original template body
             html = self.create_agentic()
-            logger.info(f"Postmortem HTML: {html}")
+            #logger.info(f"Postmortem HTML: {html}")
 
             # Create postmortem doc
             if self.exec.page_exists(
