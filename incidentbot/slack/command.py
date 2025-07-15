@@ -403,7 +403,7 @@ def say_hello_to_deep_purple(ack, body):
     agent_response: str = BedRockHandler.invoke_bedrock_agent(
         agent_id="X1XHBHFMGR",
         agent_alias_id="WREL4DGFI3",
-        input_text="Show me all active P1 alerts in production",
+        input_text="Show me all active P1 and P2 alerts in production",
         enable_trace=True, 
         end_session=False
     )
@@ -431,7 +431,7 @@ def say_hello_to_deep_purple(ack, body):
     agent_response: str = BedRockHandler.invoke_bedrock_agent(
         agent_id="X1XHBHFMGR",
         agent_alias_id="WREL4DGFI3",
-        input_text="Show me all alerts that are related to CPU Usage in Production",
+        input_text="Show me all active alerts related to CPU in production with details of each alert",
         enable_trace=True, 
         end_session=False
     )
