@@ -266,17 +266,6 @@ def command_blocks(
                         "type": "button",
                         "text": {
                             "type": "plain_text",
-                            "text": "Deep Purple Hello",
-                            "emoji": True,
-                        },
-                        "value": "deep_purple_hello",
-                        "action_id": "deep_purple_hello",
-                        "style": "primary",
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
                             "text": "Active Alerts PROD",
                             "emoji": True,
                         },
