@@ -273,6 +273,17 @@ def command_blocks(
                         "action_id": "deep_purple_hello",
                         "style": "primary",
                     },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Active Alerts PROD",
+                            "emoji": True,
+                        },
+                        "value": "active_alerts_prod",
+                        "action_id": "active_alerts_prod",
+                        "style": "primary",
+                    },
                 ],
             }
         ]
@@ -326,6 +337,34 @@ def say_hello_to_deep_purple(ack, body):
         agent_id="MH00AZX5TB",
         agent_alias_id="GIITVBBSUU",
         input_text="Hello, I'm Deep Purple. How are you today?",
+        enable_trace=True, 
+        end_session=False
+    )
+
+    try:
+        slack_web_client.chat_postMessage(
+            channel=record.channel_id,
+            text=agent_response,
+        )
+
+        return
+    except SlackApiError as error:
+        logger.error(f"error sending describe message to slack: {error}")
+
+@app.action("active_alerts_prod")
+def say_hello_to_deep_purple(ack, body):
+    """
+    Say active_alerts_prod
+    """
+    ack()
+
+    channel_id = body.get("channel").get("id")
+    record = IncidentDatabaseInterface.get_one(channel_id=channel_id)
+
+    agent_response: str = BedRockHandler.invoke_bedrock_agent(
+        agent_id="X1XHBHFMGR",
+        agent_alias_id="WREL4DGFI3",
+        input_text="Show me all active alerts in production",
         enable_trace=True, 
         end_session=False
     )
