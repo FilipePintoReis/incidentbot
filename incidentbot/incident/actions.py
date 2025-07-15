@@ -625,14 +625,15 @@ async def set_status(
 
         postmortem_link = None
 
+        logger.info("Look at this:")
+        logger.info(settings.integrations)
         if (
-            # status
-            # == [
-            #     status
-            #     for status, config in settings.statuses.items()
-            #     if config.final
-            # ][0]
-            True
+            status
+            == [
+                status
+                for status, config in settings.statuses.items()
+                if config.final
+            ][0]
         ):
             # First, make sure a postmortem doesn't already exist
             if not IncidentDatabaseInterface.get_postmortem(
