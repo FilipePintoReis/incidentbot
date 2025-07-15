@@ -330,15 +330,15 @@ def say_hello_to_deep_purple(ack, body):
         end_session=False
     )
 
-    # try:
-    #     slack_web_client.chat_postMessage(
-    #         channel=record.channel_id,
-    #         text=agent_response,
-    #     )
+    try:
+        slack_web_client.chat_postMessage(
+            channel=record.channel_id,
+            text=agent_response,
+        )
 
-    #     return
-    # except SlackApiError as error:
-    #     logger.error(f"error sending describe message to slack: {error}")
+        return
+    except SlackApiError as error:
+        logger.error(f"error sending describe message to slack: {error}")
 
 @app.action("maintenance_windows.list")
 def list_maintenance_windows(ack, body):
