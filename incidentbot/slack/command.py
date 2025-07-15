@@ -222,17 +222,6 @@ def command_blocks(
                         "type": "button",
                         "text": {
                             "type": "plain_text",
-                            "text": "Deep Purple Hello",
-                            "emoji": True,
-                        },
-                        "value": "deep_purple_hello",
-                        "action_id": "deep_purple_hello",
-                        "style": "primary",
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
                             "text": "Set Status",
                             "emoji": True,
                         },
@@ -271,7 +260,20 @@ def command_blocks(
                         "action_id": "pager",
                     },
                 ]
-                + join_buttons,
+                + join_buttons
+                + [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Deep Purple Hello",
+                            "emoji": True,
+                        },
+                        "value": "deep_purple_hello",
+                        "action_id": "deep_purple_hello",
+                        "style": "primary",
+                    },
+                ],
             }
         ]
 
