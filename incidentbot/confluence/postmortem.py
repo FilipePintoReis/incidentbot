@@ -93,7 +93,8 @@ class IncidentPostmortem:
         }
 
         agent_id = "XF3IEEO45Q"
-        alias_id = "3LIJUD6ECM"
+        # alias_id = "3LIJUD6ECM" <- markdown
+        alias_id = "WWGSUWRRPJ"
 
         agent_response: str = BedRockHandler.invoke_bedrock_agent(
             agent_id=agent_id,
@@ -103,18 +104,102 @@ class IncidentPostmortem:
             end_session=False
         )
 
-        slack_web_client.chat_postMessage(
-            channel=self.incident.channel_id,
-            blocks=[
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": agent_response
-                    }
-                },
-            ]
-        )
+        return agent_response
+
+        # slack_web_client.chat_postMessage(
+        #     channel=self.incident.channel_id,
+        #     blocks=[
+        #         {
+        #             "type": "section",
+        #             "text": {
+        #                "type": "mrkdwn",
+        #                "text": agent_response
+        #            }
+        #        },
+        #    ]
+        #)
+
+    def create_using_agent(self) -> str | None:
+        """
+        Creates a postmortem page and returns the created page's URL
+        """
+
+        try:
+            parent_page_id = self.exec.get_page_id(
+                self.space, self.parent_page
+            )
+            logger.info(
+                f"Creating postmortem {self.title} in Confluence space {self.space} under parent {self.parent_page}..."
+            )
+
+            # Get original template body
+            html = self.create_agentic()
+
+            # Create postmortem doc
+            if self.exec.page_exists(
+                space=self.space, title=self.parent_page
+            ):
+                try:
+                    self.exec.create_page(
+                        self.space,
+                        self.title,
+                        html,
+                        parent_id=parent_page_id,
+                        type="page",
+                        representation="storage",
+                        editor="v2",
+                    )
+                    created_page_id = self.exec.get_page_id(
+                        self.space, self.title
+                    )
+                    created_page_info = self.exec.get_page_by_id(
+                        page_id=created_page_id
+                    )
+                    url = (
+                        created_page_info["_links"]["base"]
+                        + created_page_info["_links"]["webui"]
+                    )
+                except HTTPError as error:
+                    logger.error(
+                        f"Error creating postmortem page: {error}"
+                    )
+                    raise PostmortemException(error)
+
+                try:
+                    # Replace timeline tag if one exists
+                    page = self.exec.get_page_by_id(
+                        created_page_id, "body.storage"
+                    )
+                    html = page.get("body").get("storage").get("value")
+                    html = html.replace(
+                        "!ib-inject-timeline",
+                        self.__generate_timeline(created_page_id),
+                    )
+
+                    self.exec.update_page(
+                        created_page_id,
+                        page.get("title"),
+                        html,
+                        parent_id=parent_page_id,
+                        type="page",
+                        representation="storage",
+                    )
+
+                    return url
+                except HTTPError as error:
+                    logger.error(
+                        f"Error updating postmortem page: {error}"
+                    )
+                    raise PostmortemException(error)
+            else:
+                logger.error(
+                    "Couldn't create postmortem page, does the parent page exist?"
+                )
+                raise PostmortemException(
+                    "Couldn't create postmortem page, does the parent page exist?"
+                )
+        except Exception as error:
+            logger.error(f"Error generating postmortem: {error}")
         
     def create(self) -> str | None:
         """

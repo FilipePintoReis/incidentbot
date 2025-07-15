@@ -651,7 +651,7 @@ async def set_status(
                     title=f"{datetime.datetime.today().strftime('%Y-%m-%d')} - {incident.slug.upper()} - {incident.description}",
                 )
 
-                postmortem.create_agentic()
+                #postmortem.create_agentic()
 
                 # Generate postmortem template and create postmortem if enabled
                 # Get normalized description as postmortem title
@@ -663,7 +663,7 @@ async def set_status(
                     and settings.integrations.atlassian.confluence.auto_create_postmortem
                 ):
 
-                    postmortem_link = postmortem.create()
+                    postmortem_link = postmortem.create_using_agent()
 
                     if postmortem_link:
                         # Create record
