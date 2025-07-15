@@ -188,3 +188,6 @@ todo.md
 
 # Configuration
 config.yaml
+
+# Ignore docker compose
+docker-compose.yml
