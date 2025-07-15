@@ -119,7 +119,7 @@ class IncidentPostmortem:
         #    ]
         #)
 
-    def create_using_agent(self) -> str | None:
+    def create(self) -> str | None:
         """
         Creates a postmortem page and returns the created page's URL
         """
@@ -201,7 +201,7 @@ class IncidentPostmortem:
         except Exception as error:
             logger.error(f"Error generating postmortem: {error}")
         
-    def create(self) -> str | None:
+    def create_orig(self) -> str | None:
         """
         Creates a postmortem page and returns the created page's URL
         """
