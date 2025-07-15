@@ -119,6 +119,9 @@ class IncidentPostmortem:
         #    ]
         #)
 
+    def create_using_agent(self) -> str | None:
+        return self.create()
+
     def create(self) -> str | None:
         """
         Creates a postmortem page and returns the created page's URL
@@ -134,6 +137,7 @@ class IncidentPostmortem:
 
             # Get original template body
             html = self.create_agentic()
+            logger.info(f"Postmortem HTML: {html}")
 
             # Create postmortem doc
             if self.exec.page_exists(
@@ -165,32 +169,6 @@ class IncidentPostmortem:
                     )
                     raise PostmortemException(error)
 
-                try:
-                    # Replace timeline tag if one exists
-                    page = self.exec.get_page_by_id(
-                        created_page_id, "body.storage"
-                    )
-                    html = page.get("body").get("storage").get("value")
-                    html = html.replace(
-                        "!ib-inject-timeline",
-                        self.__generate_timeline(created_page_id),
-                    )
-
-                    self.exec.update_page(
-                        created_page_id,
-                        page.get("title"),
-                        html,
-                        parent_id=parent_page_id,
-                        type="page",
-                        representation="storage",
-                    )
-
-                    return url
-                except HTTPError as error:
-                    logger.error(
-                        f"Error updating postmortem page: {error}"
-                    )
-                    raise PostmortemException(error)
             else:
                 logger.error(
                     "Couldn't create postmortem page, does the parent page exist?"
