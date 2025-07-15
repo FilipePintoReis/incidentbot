@@ -126,7 +126,7 @@ class ConfluenceIntegration(BaseModel):
     auto_create_postmortem: bool | None = True
     enabled: bool = True
     parent: str = "Postmortems"
-    space: str = "ENGINEERING"
+    space: str = "Incidentbot-test"
     template_id: int = "2818179247"
 
 
@@ -283,7 +283,7 @@ class Settings(BaseSettings):
     }
     initial_comms_reminder_minutes: int = 30
     initial_role_watcher_minutes: int = 10
-    integrations: Integrations | None = None
+    integrations: Integrations | None = Integrations()
     jobs: Jobs | None = None
     links: list[Link] | None = None
     maintenance_windows: MaintenanceWindows | None = None

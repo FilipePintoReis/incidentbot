@@ -19,6 +19,11 @@ class TemplateResponse(BaseModel):
 
 class ConfluenceApi:
     def __init__(self):
+        logger.info("These are the atlassian configurations:")
+        logger.info(settings.ATLASSIAN_API_URL)
+        logger.info(settings.ATLASSIAN_API_USERNAME)
+        logger.info(len(settings.ATLASSIAN_API_TOKEN))
+
         self.confluence = Confluence(
             url=settings.ATLASSIAN_API_URL,
             username=settings.ATLASSIAN_API_USERNAME,
