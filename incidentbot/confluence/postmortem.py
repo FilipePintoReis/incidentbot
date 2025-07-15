@@ -11,8 +11,8 @@ from incidentbot.models.database import (
 )
 from incidentbot.logging import logger
 from requests.exceptions import HTTPError
-from slack.client import get_postmortem_channel_history
-from slack.client import slack_web_client
+from incidentbot.slack.client import get_postmortem_channel_history
+from incidentbot.slack.client import slack_web_client
 
 from incidentbot.diagnostics.BedRockHandler import BedRockHandler
 import json
