@@ -626,12 +626,13 @@ async def set_status(
         postmortem_link = None
 
         if (
-            status
-            == [
-                status
-                for status, config in settings.statuses.items()
-                if config.final
-            ][0]
+            # status
+            # == [
+            #     status
+            #     for status, config in settings.statuses.items()
+            #     if config.final
+            # ][0]
+            True
         ):
             # First, make sure a postmortem doesn't already exist
             if not IncidentDatabaseInterface.get_postmortem(
