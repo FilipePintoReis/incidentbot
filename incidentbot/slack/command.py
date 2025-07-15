@@ -221,7 +221,7 @@ def command_blocks(
                     {
                         "type": "button",
                         "text": {
-                            "type": "deep_purple_hello",
+                            "type": "plain_text",
                             "text": "Deep Purple Hello",
                             "emoji": True,
                         },
