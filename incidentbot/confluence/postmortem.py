@@ -31,7 +31,7 @@ class IncidentPostmortem:
         self.confluence = ConfluenceApi()
         self.exec = self.confluence.api
 
-    def create(self) -> str | None:
+    def new_create(self) -> str | None:
         agent_input = self._generate_agent_input()
         agent_response = self._invoke_agent(agent_input)
         self._create_post_mortem(agent_response)
@@ -45,7 +45,7 @@ class IncidentPostmortem:
     def _create_post_mortem(self, agent_response: str) -> None:
         pass
         
-    def _old_create(self) -> str | None:
+    def create(self) -> str | None:
         """
         Creates a postmortem page and returns the created page's URL
         """
