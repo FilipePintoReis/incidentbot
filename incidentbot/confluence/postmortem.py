@@ -12,6 +12,7 @@ from incidentbot.models.database import (
 from incidentbot.logging import logger
 from requests.exceptions import HTTPError
 from slack.client import get_postmortem_channel_history
+from slack.client import slack_web_client
 
 from incidentbot.diagnostics.BedRockHandler import BedRockHandler
 import json
@@ -102,7 +103,6 @@ class IncidentPostmortem:
             end_session=False
         )
 
-        from incidentbot.slack.client import slack_web_client
         slack_web_client.chat_postMessage(
             channel=self.incident.channel_id,
             blocks=[
