@@ -11,6 +11,7 @@ from incidentbot.models.database import (
 )
 from incidentbot.logging import logger
 from requests.exceptions import HTTPError
+from slack.client import get_postmortem_channel_history
 
 
 class IncidentPostmortem:
@@ -44,6 +45,77 @@ class IncidentPostmortem:
 
     def _create_post_mortem(self, agent_response: str) -> None:
         pass
+
+    def create_agentic(self) -> str | None:
+        """
+        {
+            "channel_id": "im-3000",
+            "channel_name": "im-3000",
+            "created_at": "2025-12-23 17:00",
+            "resolved_at": "2025-12-23 19:00",
+            "severity": "SEV1",
+            "status": "RESOLVED",
+            "title": "a postmortem",
+            "slack_history": [
+            {"user": "Mehdi", "timestamp": "2025-12-23 17:05", "message": "oh fire fire laptop is on fire"},
+            {"user": "Luigi", "timestamp": "2025-12-23 17:10", "message": "Luigi grabbed firehose"},
+            {"user": "Swati", "timestamp": "2025-12-23 17:15", "message": "Mehdi damped the cloth"},
+            {"user": "Filipe", "timestamp": "2025-12-23 17:18", "message": "fire is out"},
+            {"user": "Rohan", "timestamp": "2025-12-23 17:19", "message": "we are happy"},
+            {"user": "Swarna", "timestamp": "2025-12-23 17:21", "message": "printer is damaged"}
+            ],
+            "owner": "Mehdi Kharatizadeh",
+            "link": "https://jira.org/IM-3000"
+            }
+        """
+
+        slack_history = get_postmortem_channel_history(self.incident.channel_id, self.incident.channel_name)
+        owners = [p.user_name for p in self.participants if p.is_lead]
+        if owners:
+            owner = owners[0]
+        else:
+            owner = 'unknown'
+        agent_input = {
+            'channel_id': self.incident.channel_id,
+            'channel_name': self.incident.channel_name,
+            'created_at': self.incident.created_at.strftime("%Y-%m-%d %H:%M"),
+            'resolved_at': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+            'severity': self.incident.severity,
+            'status': self.incident.status,
+            'title': self.title,
+            'slack_history': slack_history,
+            'owner': owner,
+            'link': self.incident.link,
+        }
+
+        agent_id = "XF3IEEO45Q"
+        alias_id = "3LIJUD6ECM"
+
+        from incidentbot.diagnostics.BedRockHandler import BedRockHandler
+        import json
+        agent_response: str = BedRockHandler.invoke_bedrock_agent(
+            agent_id=agent_id,
+            agent_alias_id=alias_id,
+            input_text=json.dumps(agent_input, indent=2),
+            enable_trace=True, 
+            end_session=False
+        )
+
+        from slack_sdk import WebClient
+        from incidentbot.configuration.settings import settings
+        slack_web_client = WebClient(token=settings.SLACK_BOT_TOKEN)
+        slack_web_client.chat_postMessage(
+            channel=self.incident.channel_id,
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": agent_response
+                    }
+                },
+            ]
+        )
         
     def create(self) -> str | None:
         """

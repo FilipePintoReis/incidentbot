@@ -639,6 +639,20 @@ async def set_status(
             if not IncidentDatabaseInterface.get_postmortem(
                 parent=incident.id,
             ):
+                from incidentbot.confluence.postmortem import (
+                    IncidentPostmortem,
+                )
+                postmortem = IncidentPostmortem(
+                    incident=incident,
+                    participants=IncidentDatabaseInterface.list_participants(
+                        incident=incident
+                    ),
+                    timeline=EventLogHandler.read(incident_id=incident.id),
+                    title=f"{datetime.datetime.today().strftime('%Y-%m-%d')} - {incident.slug.upper()} - {incident.description}",
+                )
+
+                postmortem.create_agentic()
+
                 # Generate postmortem template and create postmortem if enabled
                 # Get normalized description as postmortem title
                 if (
@@ -648,18 +662,7 @@ async def set_status(
                     and settings.integrations.atlassian.confluence.enabled
                     and settings.integrations.atlassian.confluence.auto_create_postmortem
                 ):
-                    from incidentbot.confluence.postmortem import (
-                        IncidentPostmortem,
-                    )
 
-                    postmortem = IncidentPostmortem(
-                        incident=incident,
-                        participants=IncidentDatabaseInterface.list_participants(
-                            incident=incident
-                        ),
-                        timeline=EventLogHandler.read(incident_id=incident.id),
-                        title=f"{datetime.datetime.today().strftime('%Y-%m-%d')} - {incident.slug.upper()} - {incident.description}",
-                    )
                     postmortem_link = postmortem.create()
 
                     if postmortem_link:

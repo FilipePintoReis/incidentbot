@@ -200,6 +200,81 @@ def get_digest_channel_id() -> str:
     return channels[index].get("id")
 
 
+def get_postmortem_channel_history(channel_id: str, channel_name: str):
+    try:
+        users = slack_web_client.users_list()["members"]
+        replaced_messages_string = replace_user_ids(
+            get_channel_history(channel_id), users
+        )
+
+        formatted_channel_history = []
+        for message in replaced_messages_string:
+            user = message["user"]
+            text = message["text"]
+            timestamp = datetime.datetime.fromtimestamp(
+                int(message["ts"].split(".")[0])
+            )
+            timestamp = timestamp.strftime("%Y-%m-%d %H:%M")
+            if "has joined the channel" in text:
+                text = f"{text} {user} joined the channel"
+            elif "set the channel topic" in text:
+                text = f"{text} {user} set the channel topic"
+            elif "This content can't be displayed." in text:
+                continue
+
+            formatted_channel_history.append(
+                {
+                    "user": user,
+                    "message": text,
+                    "timestamp": timestamp,
+                }
+            )
+    except SlackApiError as error:
+        if error.response.status_code == 429:
+            delay = int(error.response.headers["Retry-After"])
+            logger.warning(
+                f"Rate limited by Slack API. Retrying in {delay} seconds..."
+            )
+            time.sleep(delay)
+            users = slack_web_client.users_list()["members"]
+            replaced_messages_string = replace_user_ids(
+                get_channel_history(channel_id), users
+            )
+
+            formatted_channel_history = []
+            for message in replaced_messages_string:
+                user = message["user"]
+                text = message["text"]
+                timestamp = datetime.datetime.fromtimestamp(
+                    int(message["ts"].split(".")[0])
+                )
+                timestamp = timestamp.strftime("%Y-%m-%d %H:%M")
+                if "has joined the channel" in text:
+                    text = f"{text} {user} joined the channel"
+                elif "set the channel topic" in text:
+                    text = f"{text} {user} set the channel topic"
+                elif "This content can't be displayed." in text:
+                    continue
+
+                formatted_channel_history.append(
+                    {
+                        "user": user,
+                        "message": text,
+                        "timestamp": timestamp,
+                    }
+                )
+
+                formatted_channel_history = str()
+                formatted_channel_history += (
+                    f"Slack channel history for incident {channel_name}\n"
+                )
+
+        else:
+            raise error
+
+    return formatted_channel_history
+
+
 def get_formatted_channel_history(channel_id: str, channel_name: str) -> str:
     """
     Return the history of a Slack channel as a formatted string
