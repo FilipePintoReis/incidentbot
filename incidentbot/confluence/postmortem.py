@@ -101,9 +101,7 @@ class IncidentPostmortem:
             end_session=False
         )
 
-        from slack_sdk import WebClient
-        from incidentbot.configuration.settings import settings
-        slack_web_client = WebClient(token=settings.SLACK_BOT_TOKEN)
+        from incidentbot.slack.client import slack_web_client
         slack_web_client.chat_postMessage(
             channel=self.incident.channel_id,
             blocks=[
