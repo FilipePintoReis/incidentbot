@@ -98,16 +98,16 @@ def startup_tasks():
     ):
         from incidentbot.confluence.api import ConfluenceApi
 
-        api_test = ConfluenceApi()
-        passes = api_test.test()
-        if not passes:
-            logger.fatal(
-                "Could not verify Confluence parent page exists.\nYou provided: {}/{}".format(
-                    settings.integrations.atlassian.confluence.space,
-                    settings.integrations.atlassian.confluence.parent,
-                )
-            )
-            sys.exit(1)
+        # api_test = ConfluenceApi()
+        # passes = api_test.test()
+        # if not passes:
+        #     logger.fatal(
+        #         "Could not verify Confluence parent page exists.\nYou provided: {}/{}".format(
+        #             settings.integrations.atlassian.confluence.space,
+        #             settings.integrations.atlassian.confluence.parent,
+        #         )
+        #     )
+        #     sys.exit(1)
 
     if (
         settings.integrations
