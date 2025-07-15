@@ -123,11 +123,11 @@ class ConfluenceIntegration(BaseModel):
     Model for the confluence field
     """
 
-    auto_create_postmortem: bool | None = False
-    enabled: bool = False
-    parent: str
-    space: str
-    template_id: int
+    auto_create_postmortem: bool | None = True
+    enabled: bool = True
+    parent: str = "Postmortems"
+    space: str = "ENGINEERING"
+    template_id: int = "2818179247"
 
 
 class JiraIntegration(BaseModel):
