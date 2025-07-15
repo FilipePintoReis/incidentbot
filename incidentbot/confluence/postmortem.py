@@ -163,6 +163,7 @@ class IncidentPostmortem:
                         created_page_info["_links"]["base"]
                         + created_page_info["_links"]["webui"]
                     )
+                    return url
                 except HTTPError as error:
                     logger.error(
                         f"Error creating postmortem page: {error}"
