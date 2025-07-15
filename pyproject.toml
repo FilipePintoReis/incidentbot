@@ -41,6 +41,7 @@ sqlmodel = "^0.0.22"
 structlog = "^25.1.0"
 uvicorn = "^0.34.0"
 boto3 = "^1.39.4"
+aiohttp = "^3.12.14"
 
 
 [tool.poetry.group.dev.dependencies]
